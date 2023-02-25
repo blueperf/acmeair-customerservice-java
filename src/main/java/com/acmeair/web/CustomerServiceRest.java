@@ -19,6 +19,7 @@ package com.acmeair.web;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -38,7 +39,7 @@ import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
 public class CustomerServiceRest {
 
   @Inject
-  private JsonWebToken jwt;
+  JsonWebToken jwt;
   
   @Inject
   CustomerService customerService;
@@ -59,6 +60,7 @@ public class CustomerServiceRest {
     }
 
     try {
+
       // make sure the user isn't trying to update a customer other than the one
       // currently logged in
       if (!customerid.equals(jwt.getSubject())) {
@@ -112,6 +114,8 @@ public class CustomerServiceRest {
   }
 
   @GET
+  @PermitAll
+  @Path("/status")
   public Response status() {
     return Response.ok("OK").build();
 

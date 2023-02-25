@@ -21,7 +21,7 @@ import jakarta.ws.rs.core.Application;
 
 import org.eclipse.microprofile.auth.LoginConfig;
 
-@ApplicationPath("/")
+@ApplicationPath("/customer")
 @LoginConfig(authMethod = "MP-JWT", realmName = "MP-JWT")
 public class CustomerServiceApp extends Application {
 }

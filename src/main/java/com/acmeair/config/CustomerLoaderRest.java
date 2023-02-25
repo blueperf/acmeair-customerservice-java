@@ -18,6 +18,7 @@ package com.acmeair.config;
 
 import com.acmeair.loader.CustomerLoader;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -27,6 +28,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 @Path("/loader")
+@PermitAll
 public class CustomerLoaderRest {
 
   @Inject
