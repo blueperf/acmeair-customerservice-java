@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
@@ -39,9 +40,7 @@ import com.acmeair.service.CustomerService;
 import com.acmeair.web.dto.AddressInfo;
 import com.acmeair.web.dto.CustomerInfo;
 
-
-
-@Path("/internal")
+@Path("/customer/internal")
 @ApplicationScoped
 public class CustomerServiceRestInternal {
 
@@ -59,6 +58,7 @@ public class CustomerServiceRestInternal {
    * Validate user/password.
    */
   @POST
+  @PermitAll
   @Path("/validateid")
   @Consumes({ "application/x-www-form-urlencoded" })
   @Produces("application/json")
@@ -76,13 +76,14 @@ public class CustomerServiceRestInternal {
 
     Boolean validCustomer = customerService.validateCustomer(login, password);
 
-    return new LoginResponse(validCustomer); 
+    return new LoginResponse(validCustomer);
   }
 
   /**
    * Update reward miles.
    */
   @POST
+  @PermitAll
   @Path("/updateCustomerTotalMiles/{custid}")
   @Consumes({ "application/x-www-form-urlencoded" })
   @Produces("application/json")

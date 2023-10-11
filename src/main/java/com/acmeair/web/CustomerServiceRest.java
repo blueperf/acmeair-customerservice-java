@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -34,7 +35,7 @@ import com.acmeair.web.dto.CustomerInfo;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-@Path("/")
+@Path("/customer")
 @ApplicationScoped
 public class CustomerServiceRest {
 
@@ -111,6 +112,7 @@ public class CustomerServiceRest {
   }
 
   @GET
+  @PermitAll
   @Path("/status")
   public Response status() {
     return Response.ok("OK").build();
