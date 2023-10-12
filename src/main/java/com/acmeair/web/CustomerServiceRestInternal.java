@@ -20,6 +20,8 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
@@ -31,7 +33,6 @@ import jakarta.ws.rs.FormParam;
 
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 
 import com.acmeair.service.CustomerService;
@@ -78,20 +79,18 @@ public class CustomerServiceRestInternal {
 
     return new LoginResponse(validCustomer); 
   }
-
-  /**
-   * Update reward miles.
-   */
-  @POST
-  @Path("/updateCustomerTotalMiles/{custid}")
-  @Consumes({ "application/x-www-form-urlencoded" })
-  @Produces("application/json")
-  public MilesResponse updateCustomerTotalMiles(
-      @PathParam("custid") String customerid,
-      @FormParam("miles") Long miles) {
+ 
+  @Incoming("rewards")
+  public void updateCustomerTotalMiles(String update) {
     
+    String[] updateSplit = update.split(":");
+    String customerId = updateSplit[0];
+    int miles = Integer.parseInt(updateSplit[1]);
+    
+    System.out.println("updateCustomerTotalMiles: customerId" + customerId + ", miles: " + miles );
+
     JsonReader jsonReader = rfactory.createReader(new StringReader(customerService
-        .getCustomerByUsername(customerid)));
+        .getCustomerByUsername(customerId)));
 
     JsonObject customerJson = jsonReader.readObject();
     jsonReader.close();
@@ -112,18 +111,18 @@ public class CustomerServiceRestInternal {
         addressJson.getString("country"),
         addressJson.getString("postalCode"));
 
-    Long milesUpdate = customerJson.getInt("total_miles") + miles;
-    CustomerInfo customerInfo = new CustomerInfo(customerid, 
+    int milesUpdate = customerJson.getInt("total_miles") + miles;
+    CustomerInfo customerInfo = new CustomerInfo(customerId, 
         null, 
         customerJson.getString("status"),
-        milesUpdate.intValue(), 
+        milesUpdate, 
         customerJson.getInt("miles_ytd"), 
         addressInfo, 
         customerJson.getString("phoneNumber"),
         customerJson.getString("phoneNumberType"));
 
-    customerService.updateCustomer(customerid, customerInfo);
+    customerService.updateCustomer(customerId, customerInfo);
 
-    return new MilesResponse(milesUpdate);
+    System.out.println("updateCustomerTotalMiles: customerId" + customerId + ", total miles: " + milesUpdate );
   }
 }
