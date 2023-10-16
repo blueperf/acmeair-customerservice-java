@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
+import org.eclipse.microprofile.reactive.messaging.Acknowledgment.Strategy;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -39,8 +41,6 @@ import com.acmeair.service.CustomerService;
 
 import com.acmeair.web.dto.AddressInfo;
 import com.acmeair.web.dto.CustomerInfo;
-
-
 
 @Path("/internal")
 @ApplicationScoped
@@ -81,13 +81,11 @@ public class CustomerServiceRestInternal {
   }
  
   @Incoming("rewards")
+  @Acknowledgment(Acknowledgment.Strategy.NONE)
   public void updateCustomerTotalMiles(String update) {
-    
     String[] updateSplit = update.split(":");
     String customerId = updateSplit[0];
     int miles = Integer.parseInt(updateSplit[1]);
-    
-    System.out.println("updateCustomerTotalMiles: customerId" + customerId + ", miles: " + miles );
 
     JsonReader jsonReader = rfactory.createReader(new StringReader(customerService
         .getCustomerByUsername(customerId)));
@@ -123,6 +121,5 @@ public class CustomerServiceRestInternal {
 
     customerService.updateCustomer(customerId, customerInfo);
 
-    System.out.println("updateCustomerTotalMiles: customerId" + customerId + ", total miles: " + milesUpdate );
   }
 }

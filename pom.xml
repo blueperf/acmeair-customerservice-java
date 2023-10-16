@@ -163,6 +163,7 @@
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
       <version>4.0.2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
@@ -174,6 +175,12 @@
       <groupId>org.eclipse.microprofile.reactive.messaging</groupId>
       <artifactId>microprofile-reactive-messaging-api</artifactId>
       <version>3.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>3.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
