@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
-import org.eclipse.microprofile.reactive.messaging.Acknowledgment.Strategy;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -37,6 +36,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 
+import com.acmeair.rm.MilesUpdate;
 import com.acmeair.service.CustomerService;
 
 import com.acmeair.web.dto.AddressInfo;
@@ -82,10 +82,9 @@ public class CustomerServiceRestInternal {
  
   @Incoming("rewards")
   @Acknowledgment(Acknowledgment.Strategy.NONE)
-  public void updateCustomerTotalMiles(String update) {
-    String[] updateSplit = update.split(":");
-    String customerId = updateSplit[0];
-    int miles = Integer.parseInt(updateSplit[1]);
+  public void updateCustomerTotalMiles(MilesUpdate milesUpdate) {
+    String customerId = milesUpdate.getUserId();
+    int miles = milesUpdate.getMiles();
 
     JsonReader jsonReader = rfactory.createReader(new StringReader(customerService
         .getCustomerByUsername(customerId)));
@@ -109,11 +108,11 @@ public class CustomerServiceRestInternal {
         addressJson.getString("country"),
         addressJson.getString("postalCode"));
 
-    int milesUpdate = customerJson.getInt("total_miles") + miles;
+    int totalMiles = customerJson.getInt("total_miles") + miles;
     CustomerInfo customerInfo = new CustomerInfo(customerId, 
         null, 
         customerJson.getString("status"),
-        milesUpdate, 
+        totalMiles, 
         customerJson.getInt("miles_ytd"), 
         addressInfo, 
         customerJson.getString("phoneNumber"),
