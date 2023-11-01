@@ -81,7 +81,6 @@ public class CustomerServiceRestInternal {
   }
  
   @Incoming("rewards")
-  @Acknowledgment(Acknowledgment.Strategy.NONE)
   public void updateCustomerTotalMiles(MilesUpdate milesUpdate) {
     String customerId = milesUpdate.getUserId();
     int miles = milesUpdate.getMiles();
