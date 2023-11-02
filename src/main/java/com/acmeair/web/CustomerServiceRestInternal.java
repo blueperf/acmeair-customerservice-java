@@ -17,11 +17,11 @@
 package com.acmeair.web;
 
 import java.io.StringReader;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -31,10 +31,11 @@ import jakarta.json.JsonReader;
 import jakarta.json.JsonReaderFactory;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
-
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response;
 
 import com.acmeair.rm.MilesUpdate;
 import com.acmeair.service.CustomerService;
@@ -55,6 +56,8 @@ public class CustomerServiceRestInternal {
    
   private static final Logger logger = Logger.getLogger(CustomerServiceRestInternal.class.getName());
   private static final JsonReaderFactory rfactory = Json.createReaderFactory(null);
+
+  private static AtomicLong rewardRequestsReceieved = new AtomicLong();
   
   /**
    * Validate user/password.
@@ -82,6 +85,9 @@ public class CustomerServiceRestInternal {
  
   @Incoming("rewards")
   public void updateCustomerTotalMiles(MilesUpdate milesUpdate) {
+
+    rewardRequestsReceieved.incrementAndGet();
+
     String customerId = milesUpdate.getUserId();
     int miles = milesUpdate.getMiles();
 
@@ -119,5 +125,13 @@ public class CustomerServiceRestInternal {
 
     customerService.updateCustomer(customerId, customerInfo);
 
+  }
+
+
+  @GET
+  @Path("/rewardRequestsRecieved")
+  @Produces("application/json")
+  public Response rewardRequestsRecieved() {
+    return Response.ok(rewardRequestsReceieved.get()).build();
   }
 }
