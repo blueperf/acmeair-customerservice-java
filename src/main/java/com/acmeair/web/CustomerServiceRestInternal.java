@@ -57,7 +57,7 @@ public class CustomerServiceRestInternal {
   private static final Logger logger = Logger.getLogger(CustomerServiceRestInternal.class.getName());
   private static final JsonReaderFactory rfactory = Json.createReaderFactory(null);
 
-  private static AtomicLong rewardRequestsReceieved = new AtomicLong();
+  private static AtomicLong rewardRequestsReceived = new AtomicLong();
   
   /**
    * Validate user/password.
@@ -86,7 +86,7 @@ public class CustomerServiceRestInternal {
   @Incoming("rewards")
   public void updateCustomerTotalMiles(MilesUpdate milesUpdate) {
 
-    rewardRequestsReceieved.incrementAndGet();
+    rewardRequestsReceived.incrementAndGet();
 
     String customerId = milesUpdate.getUserId();
     int miles = milesUpdate.getMiles();
@@ -129,9 +129,9 @@ public class CustomerServiceRestInternal {
 
 
   @GET
-  @Path("/rewardRequestsRecieved")
+  @Path("/rewardRequestsReceived")
   @Produces("application/json")
-  public Response rewardRequestsRecieved() {
-    return Response.ok(rewardRequestsReceieved.get()).build();
+  public Response rewardRequestsReceived() {
+    return Response.ok(rewardRequestsReceived.get()).build();
   }
 }
