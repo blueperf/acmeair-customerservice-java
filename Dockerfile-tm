@@ -1,7 +1,8 @@
-FROM tomee:9-jre17-microprofile
+FROM tomee:10-jre17-microprofile
 
 RUN rm -rf /usr/local/tomee/webapps/*
 COPY target/acmeair-customerservice-java-6.1.war /usr/local/tomee/webapps/ROOT.war
+ENV JAVA_OPTS="-Xmx512m"
 RUN sed -i "s/8080/9080/g" conf/server.xml
 
 ENV JAEGER_ENABLEMENT=true
